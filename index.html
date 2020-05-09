@@ -1,0 +1,553 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Fuzzy - Fox And Robbit</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/bootstrap-rtl.css">
+	<link rel="stylesheet" href="style.css">
+
+	<script src="js/jquery.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+</head>
+<body >
+<div class="container">
+  <p>Note:The rabbit is blindfolded </p>
+	<p>Choose values between 1 and 100 </p>
+	<input type="text" id="fx1" placeholder="X for fox:" />
+	<input type="text" id="fx2" placeholder="Y for fox:" />
+	<input type="text" id="rx1" placeholder="X for rabbit:" />
+	<input type="text" id="rx2" placeholder="Y for rabbit:" />
+	<p>Fox Position:</p>
+	<input type="text" id="vfx1" /> | <input type="text" id="vfx2" />
+	<p>Rabbit Position:</p>
+	<input type="text" id="vrx1" /> | <input type="text" id="vrx2" />
+	<button onclick="loop()">GO</button>
+	<button onclick="c()">Clear</button>
+	<span>closed area:</span> <input type="checkbox" checked="checked" id="check" />
+	<img id="fox" width="2" height="2"
+		 src="fox.png" alt="The Scream">
+	<img id="rabbit" width="2" height="2"
+		 src="rabbit.jpg" alt="The Scream">
+
+	<canvas id="myCanvas" width="1000" height="1000"
+			style="border:1px solid #d3d3d3;">
+		Your browser does not support the HTML5 canvas tag.
+	</canvas>
+
+
+</div>
+	
+
+	<script>
+		function c() {
+
+
+			var canvas = document.getElementById("myCanvas");
+			var ctx = canvas.getContext("2d");
+
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+		}
+		//window.onload = function() {
+		//    var canvas = document.getElementById("myCanvas");
+		//    var ctx = canvas.getContext("2d");
+		//    var ctx2 = canvas.getContext("2d");
+		//    var fox = document.getElementById("fox");
+		//    var rabbit = document.getElementById("rabbit");
+		//    //ctx.drawImage(fox, 500, 100);
+		//    //ctx2.drawImage(rabbit, 500, 200);
+		//};
+	</script>
+
+	<script>
+
+		function loop() {
+
+
+
+			var canvas = document.getElementById("myCanvas");
+
+			var ctx = canvas.getContext("2d");
+			var ctx2 = canvas.getContext("2d");
+			var fox = document.getElementById("fox");
+			var rabbit = document.getElementById("rabbit");
+
+
+			var check = document.getElementById("check");
+
+			var checkclose = 0;
+			if (check.checked == true) {
+				checkclose = 1;
+			}
+
+			var Fx1s = document.getElementById("fx1").value;
+			var Fx2s = document.getElementById("fx2").value;
+			var Rx1s = document.getElementById("rx1").value;
+			var Rx2s = document.getElementById("rx2").value;
+
+
+
+			var vFx1s = document.getElementById("vfx1");
+			var vFx2s = document.getElementById("vfx2");
+			var vRx1s = document.getElementById("vrx1");
+			var vRx2s = document.getElementById("vrx2");
+
+
+			var Fx1 = parseFloat(Fx1s);
+			var Fx2 = parseFloat(Fx2s);
+			var Rx1 = parseFloat(Rx1s);
+			var Rx2 = parseFloat(Rx2s);
+
+
+			ctx.drawImage(fox, Fx1 * 10, Fx2 * 10);
+			ctx2.drawImage(rabbit, Rx1 * 10, Rx2 * 10);
+
+
+
+			var deltax1 = parseFloat(Rx1 - Fx1);
+			var deltax2 = parseFloat(Rx2 - Fx2);
+			var flag = 1;
+			var RandRx1;
+			var RandRx2;
+			var RLset, Rset, RRset, RRRset, Lset, LLset, LLLset;
+			var TBset, Tset, TTset, TTTset, Bset, BBset, BBBset;
+
+
+			var RL_TB_set = [[5, 2, 0, 0, 0, 2, 5],
+			[5, 5, 2, 0, 2, 5, 5],
+			[5, 5, 2, 0, 2, 5, 5],
+			[5, 5, 2, 0, 2, 5, 5],
+			[5, 5, 2, 0, 2, 5, 5],
+			[5, 5, 2, 0, 2, 5, 5],
+			[5, 2, 0, 0, 0, 2, 5]
+			];
+
+			var RL_TB_set_rule1 = [[5, 2, 0, 0, 0, 2, 5],
+			[5, 5, 2, 0, 2, 5, 5],
+			[5, 5, 2, 0, 2, 5, 5],
+			[5, 5, 2, 0, 2, 5, 5],
+			[5, 5, 2, 0, 2, 5, 5],
+			[5, 5, 2, 0, 2, 5, 5],
+			[5, 2, 0, 0, 0, 2, 5]
+			];
+
+			var RL_TB_set_rule2 = [[5, 2, 0, 0, 0, 2, 5],
+			[5, 5, 2, 0, 2, 5, 5],
+			[5, 5, 2, 0, 2, 5, 5],
+			[5, 5, 2, 0, 2, 5, 5],
+			[5, 5, 2, 0, 2, 5, 5],
+			[5, 5, 2, 0, 2, 5, 5],
+			[5, 2, 0, 0, 0, 2, 5]
+			];
+
+			var R_set1 = [[5, 2, 0, 0, 0, 2, 5],
+			[5, 5, 2, 0, 2, 5, 5],
+			[5, 5, 2, 0, 2, 5, 5],
+			[5, 5, 2, 0, 2, 5, 5],
+			[5, 5, 2, 0, 2, 5, 5],
+			[5, 5, 2, 0, 2, 5, 5],
+			[5, 2, 0, 0, 0, 2, 5]
+			];
+			var R_set2 = [[5, 5, 5, 5, 5, 5, 5],
+			[2, 5, 5, 5, 5, 5, 2],
+			[0, 2, 2, 2, 2, 2, 0],
+			[0, 0, 0, 0, 0, 0, 0],
+			[0, 2, 2, 2, 2, 2, 0],
+			[2, 5, 5, 5, 5, 5, 2],
+			[5, 5, 5, 5, 5, 5, 5]
+			];
+			var rightleft = [];
+			var topbottom = [];
+			var sum_RL_TB_rule_set1;
+
+			var sum_RL_TB_rule_set2;
+
+
+			var y1;
+			var y2;
+
+
+			var myVar = setInterval(myTimer, 200);
+
+			function myTimer() {
+
+
+
+				RandRx1 = Math.random() * 1;
+				RandRx2 = Math.random() * 2;
+
+				Rx1 = Rx1 + RandRx1;
+				Rx2 = Rx2 + RandRx2;
+				if (checkclose == 1) {
+					if (Rx1 > 98) {
+						Rx1 = Rx1 - RandRx1;
+						Rx1 = Rx1 - RandRx1;
+					}
+					if (Rx2 > 98) {
+						Rx2 = Rx2 - RandRx2;
+						Rx2 = Rx2 - RandRx2;
+					}
+				}
+				RandRx1 = Math.random() * -2;
+				RandRx2 = Math.random() * -1;
+
+				Rx1 = Rx1 + RandRx1;
+				Rx2 = Rx2 + RandRx2;
+				if (checkclose == 1) {
+					if (Rx1 < 0) {
+						Rx1 = Rx1 - RandRx1;
+						Rx1 = Rx1 - RandRx1;
+					}
+					if (Rx2 < 0) {
+						Rx2 = Rx2 - RandRx2;
+						Rx2 = Rx2 - RandRx2;
+					}
+				}
+				ctx2.drawImage(rabbit, Rx1 * 10, Rx2 * 10);
+
+
+				vRx1s.value = Rx1;
+				vRx2s.value = Rx2;
+
+				deltax1 = Rx1 - Fx1;
+				deltax2 = Rx2 - Fx2;
+
+				RLset = Math.exp(-(Math.pow((0 - deltax1), 2)) / 48);
+				Rset = Math.exp(-(Math.pow((20 - deltax1), 2)) / 195); // exp(-((20 - deltax1) ^ 2) / 195);
+				RRset = Math.exp(-(Math.pow((50 - deltax1), 2)) / 435); //exp(-((50 - deltax1) ^ 2) / 435);
+				RRRset = Math.exp(-(Math.pow((100 - deltax1), 2)) / 1060);// exp(-((100 - deltax1) ^ 2) / 1060);
+				Lset = Math.exp(-(Math.pow((-20 - deltax1), 2)) / 195); //exp(-((-20 - deltax1) ^ 2) / 195);
+				LLset = Math.exp(-(Math.pow((-50 - deltax1), 2)) / 435); //exp(-((-50 - deltax1) ^ 2) / 435);
+				LLLset = Math.exp(-(Math.pow((-100 - deltax1), 2)) / 1060);// exp(-((-100 - deltax1) ^ 2) / 1060);
+
+				rightleft = [LLLset, LLset, Lset, RLset, Rset, RRset, RRRset];
+
+				for (var ii = 0; ii <= 6; ii++) {
+					if (rightleft[ii] < 0.01)
+						rightleft[ii] = 0;
+				}
+
+				TBset = Math.exp(-(Math.pow((0 - deltax1), 2)) / 48);
+				Tset = Math.exp(-(Math.pow((20 - deltax1), 2)) / 195); // exp(-((20 - deltax1) ^ 2) / 195);
+				TTset = Math.exp(-(Math.pow((50 - deltax1), 2)) / 435); //exp(-((50 - deltax1) ^ 2) / 435);
+				TTTset = Math.exp(-(Math.pow((100 - deltax1), 2)) / 1060);// exp(-((100 - deltax1) ^ 2) / 1060);
+				Bset = Math.exp(-(Math.pow((-20 - deltax1), 2)) / 195); //exp(-((-20 - deltax1) ^ 2) / 195);
+				BBset = Math.exp(-(Math.pow((-50 - deltax1), 2)) / 435); //exp(-((-50 - deltax1) ^ 2) / 435);
+				BBBset = Math.exp(-(Math.pow((-100 - deltax1), 2)) / 1060);// exp(-((-100 - deltax1) ^ 2) / 1060);
+
+				topbottom = [BBBset, BBset, Bset, TBset, Tset, TTset, TTTset];
+
+				for (var ii = 0; ii <= 6; ii++) {
+					if (topbottom[ii] < 0.01)
+						topbottom[ii] = 0;
+				}
+
+
+
+				//var RL_TB_set = new Array(7);
+				//for (var i = 0; i <= 6; i++)
+				//    RL_TB_set[i] = new Array(7);
+
+				for (var i = 0; i <= 6; i++) {
+					for (var j = 0; j <= 6; j++) {
+						RL_TB_set[i][j] = topbottom[i] * rightleft[j];
+					}
+				}
+
+				var sum_RL_TB_set = 0;
+
+				for (var i = 0; i <= 6; i++) {
+					for (var j = 0; j <= 6; j++) {
+						sum_RL_TB_set = sum_RL_TB_set + RL_TB_set[i][j];
+					}
+				}
+
+
+
+
+				// var RL_TB_set_rule1 = [[], []];
+				//   var RL_TB_set_rule1 = new Array(7);
+
+				//   for (var i = 0; i <= 6; i++)
+				//    RL_TB_set_rule1[i] = new Array(7);
+				for (var i = 0; i <= 6; i++) {
+					for (j = 0; j <= 6; j++) {
+						RL_TB_set_rule1[i][j] = R_set1[i][j] * RL_TB_set[i][j];
+					}
+				}
+
+
+				//   var RL_TB_set_rule2 = [[], []];
+				//var RL_TB_set_rule2 = new Array(7);
+				//for (var i = 0; i <= 6; i++)
+				//    RL_TB_set_rule2[i] = new Array(7);
+				for (var i = 0; i <= 6; i++) {
+					for (j = 0; j <= 6; j++) {
+						RL_TB_set_rule2[i][j] = R_set2[i][j] * RL_TB_set[i][j];
+					}
+				}
+
+
+				sum_RL_TB_rule_set1 = 0;
+				for (var i = 0; i <= 6; i++) {
+					for (var j = 0; j <= 6; j++) {
+						sum_RL_TB_rule_set1 = sum_RL_TB_rule_set1 + RL_TB_set_rule1[i][j];
+					}
+				}
+
+
+
+				sum_RL_TB_rule_set2 = 0;
+				for (var i = 0; i <= 6; i++) {
+					for (var j = 0; j <= 6; j++) {
+						sum_RL_TB_rule_set2 = sum_RL_TB_rule_set2 + RL_TB_set_rule2[i][j];
+					}
+				}
+
+
+				y1 = parseFloat(sum_RL_TB_rule_set1 / sum_RL_TB_set);
+				y2 = parseFloat(sum_RL_TB_rule_set2 / sum_RL_TB_set);
+
+
+				if (y1 != 0)
+					if (deltax1 > 0) {
+						deltax1 = deltax1 - y1;
+						Fx1 = Fx1 + y1;
+					}
+					else {
+						deltax1 = deltax1 + y1;
+						Fx1 = Fx1 - y1;
+					}
+
+
+
+
+
+				if (y2 != 0)
+					if (deltax2 > 0) {
+						deltax2 = deltax2 - y2;
+						Fx2 = Fx2 + y2;
+					}
+
+					else {
+						deltax2 = deltax2 + y2;
+						Fx2 = Fx2 - y2;
+					}
+
+
+
+
+				if ((deltax1 < .6) && (deltax1 > -.6))
+					y1 = 0;
+
+
+				if ((deltax2 < .6) && (deltax2 > -.6))
+					y2 = 0;
+
+
+				if ((y1 == 0) && (y2 == 0))
+					flag = 0;
+
+
+
+				ctx.drawImage(fox, Fx1 * 10, Fx2 * 10);
+
+				vFx1s.value = Fx1;
+				vFx2s.value = Fx2;
+
+				if (flag == 0) {
+					myStopFunction();
+				}
+
+
+
+			}
+
+			function myStopFunction() {
+				clearInterval(myVar);
+				alert("The fox hunted the robbit!!!")
+			}
+
+
+
+
+
+			//while (flag == 1) {
+
+			//             RandRx1 = Math.random() * 1;
+			//             RandRx2 = Math.random() * 2;
+
+			//             Rx1 = Rx1 + RandRx1;
+			//             Rx2 = Rx2 + RandRx2;
+
+			//             RandRx1 = Math.random() * -2;
+			//             RandRx2 = Math.random() * -1;
+
+			//             Rx1 = Rx1 + RandRx1;
+			//             Rx2 = Rx2 + RandRx2;
+			//         ctx2.drawImage(rabbit, Rx1 * 10, Rx2 * 10);
+
+
+			//             deltax1 = Rx1 - Fx1;
+			//             deltax2 = Rx2 - Fx2;
+
+			//             RLset = Math.exp(-(Math.pow((0 - deltax1), 2)) / 48);
+			//             Rset = Math.exp(-(Math.pow((20 - deltax1), 2)) / 195); // exp(-((20 - deltax1) ^ 2) / 195);
+			//             RRset = Math.exp(-(Math.pow((50 - deltax1), 2)) / 435); //exp(-((50 - deltax1) ^ 2) / 435);
+			//             RRRset = Math.exp(-(Math.pow((100 - deltax1), 2)) / 1060);// exp(-((100 - deltax1) ^ 2) / 1060);
+			//             Lset = Math.exp(-(Math.pow((-20 - deltax1), 2)) / 195); //exp(-((-20 - deltax1) ^ 2) / 195);
+			//             LLset = Math.exp(-(Math.pow((-50 - deltax1), 2)) / 435); //exp(-((-50 - deltax1) ^ 2) / 435);
+			//             LLLset = Math.exp(-(Math.pow((-100 - deltax1), 2)) / 1060);// exp(-((-100 - deltax1) ^ 2) / 1060);
+
+			//             rightleft = [LLLset, LLset, Lset, RLset, Rset, RRset, RRRset];
+
+			//             for (var ii = 0; ii <= 6; ii++) {
+			//                 if (rightleft[ii] < 0.01)
+			//                     rightleft[ii] = 0;
+			//             }
+
+			//             TBset = Math.exp(-(Math.pow((0 - deltax1), 2)) / 48);
+			//             Tset = Math.exp(-(Math.pow((20 - deltax1), 2)) / 195); // exp(-((20 - deltax1) ^ 2) / 195);
+			//             TTset = Math.exp(-(Math.pow((50 - deltax1), 2)) / 435); //exp(-((50 - deltax1) ^ 2) / 435);
+			//             TTTset = Math.exp(-(Math.pow((100 - deltax1), 2)) / 1060);// exp(-((100 - deltax1) ^ 2) / 1060);
+			//             Bset = Math.exp(-(Math.pow((-20 - deltax1), 2)) / 195); //exp(-((-20 - deltax1) ^ 2) / 195);
+			//             BBset = Math.exp(-(Math.pow((-50 - deltax1), 2)) / 435); //exp(-((-50 - deltax1) ^ 2) / 435);
+			//             BBBset = Math.exp(-(Math.pow((-100 - deltax1), 2)) / 1060);// exp(-((-100 - deltax1) ^ 2) / 1060);
+
+			//             topbottom = [BBBset, BBset, Bset, TBset, Tset, TTset, TTTset];
+
+			//             for (var ii = 0; ii <= 6; ii++) {
+			//                 if (topbottom[ii] < 0.01)
+			//                     topbottom[ii] = 0;
+			//             }
+
+
+
+			//             //var RL_TB_set = new Array(7);
+			//             //for (var i = 0; i <= 6; i++)
+			//             //    RL_TB_set[i] = new Array(7);
+
+			//             for (var i = 0; i <= 6; i++) {
+			//                 for (var j = 0; j <= 6; j++) {
+			//                     RL_TB_set[i][j] = topbottom[i] * rightleft[j];
+			//                 }
+			//             }
+
+			//             var sum_RL_TB_set = 0;
+
+			//             for (var i = 0; i <= 6; i++) {
+			//                 for (var j = 0; j <= 6; j++) {
+			//                     sum_RL_TB_set = sum_RL_TB_set + RL_TB_set[i][j];
+			//                 }
+			//             }
+
+
+
+
+			//             // var RL_TB_set_rule1 = [[], []];
+			//             //   var RL_TB_set_rule1 = new Array(7);
+
+			//             //   for (var i = 0; i <= 6; i++)
+			//             //    RL_TB_set_rule1[i] = new Array(7);
+			//             for (var i = 0; i <= 6; i++) {
+			//                 for (j = 0; j <= 6; j++) {
+			//                     RL_TB_set_rule1[i][j] = R_set1[i][j] * RL_TB_set[i][j];
+			//                 }
+			//             }
+
+
+			//             //   var RL_TB_set_rule2 = [[], []];
+			//             //var RL_TB_set_rule2 = new Array(7);
+			//             //for (var i = 0; i <= 6; i++)
+			//             //    RL_TB_set_rule2[i] = new Array(7);
+			//             for (var i = 0; i <= 6; i++) {
+			//                 for (j = 0; j <= 6; j++) {
+			//                     RL_TB_set_rule2[i][j] = R_set2[i][j] * RL_TB_set[i][j];
+			//                 }
+			//             }
+
+
+			//             sum_RL_TB_rule_set1 = 0;
+			//             for (var i = 0; i <= 6; i++) {
+			//                 for (var j = 0; j <= 6; j++) {
+			//                     sum_RL_TB_rule_set1 = sum_RL_TB_rule_set1 + RL_TB_set_rule1[i][j];
+			//                 }
+			//             }
+
+
+
+			//             sum_RL_TB_rule_set2 = 0;
+			//             for (var i = 0; i <= 6; i++) {
+			//                 for (var j = 0; j <= 6; j++) {
+			//                     sum_RL_TB_rule_set2 = sum_RL_TB_rule_set2 + RL_TB_set_rule2[i][j];
+			//                 }
+			//             }
+
+
+			//             y1 = parseFloat(sum_RL_TB_rule_set1 / sum_RL_TB_set);
+			//             y2 = parseFloat(sum_RL_TB_rule_set2 / sum_RL_TB_set);
+
+
+			//             if (y1 != 0)
+			//                 if (deltax1 > 0) {
+			//                     deltax1 = deltax1 - y1;
+			//                     Fx1 = Fx1 + y1;
+			//                 }
+			//                 else {
+			//                     deltax1 = deltax1 + y1;
+			//                     Fx1 = Fx1 - y1;
+			//                 }
+
+
+
+
+
+			//             if (y2 != 0)
+			//                 if (deltax2 > 0) {
+			//                     deltax2 = deltax2 - y2;
+			//                     Fx2 = Fx2 + y2;
+			//                 }
+
+			//                 else {
+			//                     deltax2 = deltax2 + y2;
+			//                     Fx2 = Fx2 - y2;
+			//                 }
+
+
+
+
+			//             if ((deltax1 < .6) && (deltax1 > -.6))
+			//                 y1 = 0;
+
+
+			//             if ((deltax2 < .6) && (deltax2 > -.6))
+			//                 y2 = 0;
+
+
+			//             if ((y1 == 0) && (y2 == 0))
+			//                 flag = 0;
+
+
+
+			//             ctx.drawImage(fox, Fx1 * 10, Fx2 * 10);
+
+
+
+			// }
+
+
+
+			//
+
+
+
+
+
+
+		}
+
+	</script>
+
+</body>
+</html>
